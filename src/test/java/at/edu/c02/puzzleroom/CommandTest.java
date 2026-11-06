@@ -1,12 +1,15 @@
 package at.edu.c02.puzzleroom;
 
+import at.edu.c02.puzzleroom.commands.CommandFastmove;
 import at.edu.c02.puzzleroom.commands.CommandLoad;
 import at.edu.c02.puzzleroom.commands.CommandMove;
+import at.edu.c02.puzzleroom.exceptions.PuzzleRoomException;
 import at.edu.c02.puzzleroom.exceptions.PuzzleRoomInvalidArgumentsException;
 import at.edu.c02.puzzleroom.exceptions.PuzzleRoomInvalidMoveException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class CommandTest {
     @Test
@@ -39,5 +42,39 @@ public class CommandTest {
 
         // This should throw a PuzzleRoomInvalidArgumentsException
         new CommandMove(new String[]{"invalid"}).execute(gameBoard);
+    }
+
+    @Test
+    public void fastMovePositiveTest() throws Exception {
+        GameBoard gameBoard = new GameBoardImpl();
+        new CommandLoad(new String[]{"src/test/resources/hardmode.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+
+        new CommandFastmove(new String[]{"u", "r", "r", "r", "r", "d"}).execute(gameBoard);
+
+        assertEquals(6, player.getStepCount());
+        assertEquals(5, player.getRow());
+        assertEquals(5, player.getCol());
+    }
+
+    @Test
+    public void fastMoveNegativeTest() throws Exception {
+
+        GameBoard gameBoard = new GameBoardImpl();
+
+        new CommandLoad(new String[]{"src/test/resources/hardmode.maze"}).execute(gameBoard);
+
+        Player player = gameBoard.getPlayer();
+
+        try{
+            new CommandFastmove(new String[]{"u", "r", "r", "r", "r", "d", "d"}).execute(gameBoard);
+            fail("Expected PuzzleRoomException to be thrown");
+        } catch (PuzzleRoomException e) {
+            // Expected exception, do nothing
+        }
+
+        assertEquals(6, player.getStepCount());
+        assertEquals(5, player.getRow());
+        assertEquals(5, player.getCol());
     }
 }
