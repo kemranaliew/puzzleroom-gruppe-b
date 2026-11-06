@@ -108,4 +108,37 @@ public class FieldTest {
     }
 
 
+    @Test
+    public void oneWayLeftBlockedTest() throws Exception {
+        GameBoard gameBoard = new GameBoardImpl();
+
+        new CommandLoad(new String[]{
+                "src/test/resources/oneWayRight.maze"
+        }).execute(gameBoard);
+
+        Player player = gameBoard.getPlayer();
+
+        // Move onto the arrow field
+        assertTrue(player.moveRight());
+        assertTrue(player.moveRight());
+
+        // Player is standing on '>'
+        assertEquals(1, player.getRow());
+        assertEquals(3, player.getCol());
+        assertEquals(2, player.getStepCount());
+
+        // Moving left must not be allowed
+        boolean success = player.moveLeft();
+        assertFalse(success);
+
+        // Player must still be on the arrow
+        assertEquals(1, player.getRow());
+        assertEquals(3, player.getCol());
+
+        // No additional step was taken
+        assertEquals(2, player.getStepCount());
+    }
+
+
+
 }
