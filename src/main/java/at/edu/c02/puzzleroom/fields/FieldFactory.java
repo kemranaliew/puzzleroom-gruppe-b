@@ -28,6 +28,7 @@ public class FieldFactory {
      */
     public Field createField(char fieldName, int row, int col) throws PuzzleRoomException {
         return switch (fieldName) {
+            case '@' -> new FieldIce(gameBoard, fieldName, row, col);
             case ' ' -> new FieldPath(gameBoard, fieldName, row, col);
             case '#' -> new FieldWall(gameBoard, fieldName, row, col);
             case 'o' -> new FieldStart(gameBoard, fieldName, row, col);
